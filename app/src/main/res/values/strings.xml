@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">vianelo_app</string>
+    <string name="hint_correo">Ingrese su correo</string>
+    <string name="hint_contraseña">Ingrese su contraseña</string>
+    <string name="hint_usuario">Ingrese su usuario</string>
+    <string name="hint_confirm_contraseña">Confirme su contraseña</string>
+    <string name="hint_nombre">Ingrese su nombre</string>
+</resources>

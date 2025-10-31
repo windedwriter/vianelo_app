@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "643755407371",
+    "project_id": "vianelo-26cd0",
+    "storage_bucket": "vianelo-26cd0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:643755407371:android:66a7fc1025b43874d5af0e",
+        "android_client_info": {
+          "package_name": "com.example.vianelo_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "643755407371-5b769tougeflpnmidu9p57ihrshg4dt0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBd5RuX8oHKNWkXYyW0HcQTiUfcvwwjMp0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "643755407371-5b769tougeflpnmidu9p57ihrshg4dt0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
