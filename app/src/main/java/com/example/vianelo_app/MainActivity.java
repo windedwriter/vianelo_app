@@ -17,12 +17,14 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText edtEmail, edtPassword;
     private FirebaseAuth auth;
+    private boolean navegando=false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.inicio_sesion); // Tu layout de login
+        setContentView(R.layout.inicio_sesion);
 
         auth        = FirebaseAuth.getInstance();
         edtEmail    = findViewById(R.id.Et_email);
@@ -40,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        // Si ya hay sesión iniciada, ir directo a Home
+
         FirebaseUser current = FirebaseAuth.getInstance().getCurrentUser();
         if (current != null) {
             irAHome();
@@ -68,7 +70,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void irAHome() {
-        startActivity(new Intent(MainActivity.this, HomeActivity.class));
+        if (navegando) return;
+        navegando = true;
+
+        Intent i = new Intent(MainActivity.this, HomeActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(i);
         finish();
     }
 }

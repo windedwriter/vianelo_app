@@ -7,10 +7,10 @@
     android:layout_height="match_parent">
 
     <EditText
-        android:id="@+id/Et_user"
+        android:id="@+id/Et_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="@string/hint_usuario"
+        android:hint="@string/hint_correo"
         android:ems="10"
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,7 +29,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Et_user" />
+        app:layout_constraintTop_toBottomOf="@+id/Et_email" />
 
     <Button
         android:id="@+id/btn_login"
