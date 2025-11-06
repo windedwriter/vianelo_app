@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/morado_vianelo">
 
     <EditText
         android:id="@+id/Et_email"
@@ -42,6 +43,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:gravity="center"
         app:layout_constraintStart_toStartOf="parent"
+        android:backgroundTint="@color/naranja_vianelo"
         app:layout_constraintTop_toBottomOf="@+id/Et_password" />
 
     <Button
@@ -54,6 +56,7 @@
         android:gravity="center"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
+        android:backgroundTint="@color/naranja_vianelo"
         app:layout_constraintTop_toBottomOf="@+id/btn_login" />
 
     <ImageView
