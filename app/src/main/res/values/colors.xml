@@ -4,4 +4,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="naranja_vianelo">#E65847</color>
     <color name="morado_vianelo">#E6C7F9</color>
+    <color name="caf_success">#2E7D32</color>
+    <color name="red">#C62828</color>
 </resources>
