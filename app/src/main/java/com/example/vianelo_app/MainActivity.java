@@ -19,7 +19,6 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private boolean navegando=false;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
         FirebaseUser current = FirebaseAuth.getInstance().getCurrentUser();
         if (current != null) {
             irAHome();
