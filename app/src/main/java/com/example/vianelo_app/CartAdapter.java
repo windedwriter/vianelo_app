@@ -13,15 +13,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.VH> {
-    public interface CartActions {
+    public interface Actions {
         void onPlus(CartItem item);
         void onMinus(CartItem item);
         void onRemove(CartItem item);
     }
     private List<CartItem> data = new ArrayList<>();
-    private final CartActions actions;
+    private final Actions actions;
 
-    public CartAdapter(CartActions a){ this.actions = a; }
+    public CartAdapter(Actions a){ this.actions = a; }
+    
     public void submit(List<CartItem> items){ this.data = items; notifyDataSetChanged(); }
 
     static class VH extends RecyclerView.ViewHolder {
@@ -91,7 +92,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.VH> {
         h.remove.setOnClickListener(v -> actions.onRemove(it));
     }
 
-    // Helper para armar el texto de variantes (tamaño/leche/extras)
+
     private String buildVariant(String size, String milk, String extras) {
         StringBuilder sb = new StringBuilder();
         if (size != null && !size.isEmpty()) sb.append(size);
@@ -106,7 +107,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.VH> {
         return sb.toString();
     }
 
-    // Formato moneda MXN
+
     private String toMXN(double value){
         java.text.NumberFormat f = java.text.NumberFormat.getCurrencyInstance(new java.util.Locale("es","MX"));
         return f.format(value);

@@ -28,13 +28,14 @@ android {
     }
 
     compileOptions {
-        // Usa una sola versión. Recomiendo Java 17 con AGP 8+
+
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
 }
 
 dependencies {
+
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -62,5 +63,7 @@ dependencies {
     // Lifecycle
     implementation("androidx.lifecycle:lifecycle-livedata:2.8.6")
     implementation("androidx.lifecycle:lifecycle-viewmodel:2.8.6")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
 
 }

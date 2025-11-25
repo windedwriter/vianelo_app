@@ -5,4 +5,5 @@
     <string name="hint_usuario">Ingrese su usuario</string>
     <string name="hint_confirm_contraseña">Confirme su contraseña</string>
     <string name="hint_nombre">Ingrese su nombre</string>
+    <string name="btn_logout">cerrar sesion\n</string>
 </resources>

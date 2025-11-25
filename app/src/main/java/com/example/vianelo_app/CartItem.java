@@ -1,13 +1,11 @@
 package com.example.vianelo_app;
 
 import androidx.annotation.NonNull;
-import androidx.room.Entity;
-import androidx.room.Index;
-import androidx.room.PrimaryKey;
 
-@Entity(tableName = "cart_items")
 public class CartItem {
-    @PrimaryKey(autoGenerate = true) public long id;
+
+
+    public long id;
 
     @NonNull public String productId;
     @NonNull public String nameBase;
@@ -20,7 +18,11 @@ public class CartItem {
     public int quantity;
     public String imageUrl;
 
-    // Nombre dinámico a mostrar
+
+    public CartItem() {
+    }
+
+
     public String getDisplayName() {
         StringBuilder sb = new StringBuilder(nameBase);
         if (size != null && !size.isEmpty()) sb.append(" • ").append(size);
@@ -31,5 +33,3 @@ public class CartItem {
 
     public double getSubtotal(){ return price * quantity; }
 }
-
-
