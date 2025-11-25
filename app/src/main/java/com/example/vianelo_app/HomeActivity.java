@@ -31,7 +31,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.catalogo);
 
-        // TOOLBAR (con carrito)
+
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         setSupportActionBar(toolbar);
         toolbar.setOnMenuItemClickListener(item -> {
@@ -83,7 +83,15 @@ public class HomeActivity extends AppCompatActivity {
                 });
     }
 
-    // =================== AGREGAR AL CARRITO ===================
+    /**
+     Agrega un producto seleccionado al carrito de compras del usuario en Firestore.
+
+     Este método primero obtiene el UID del usuario actual. Luego verifica si el producto ya existe en el carrito del usuario. Si existe, la cantidad del artículo se incrementa en uno. Si no existe, se crea un nuevo elemento en el carrito con una cantidad de uno.
+
+     El artículo nuevo o actualizado —que incluye detalles del producto como ID, nombre, precio y URL de la imagen— se guarda o actualiza en la subcolección "items" dentro del documento específico del carrito del usuario en la colección "carts".
+
+     @param p El objeto {@link Product} que se agregará al carrito.
+     */ // =================== AGREGAR AL CARRITO ===================
     private void addToCart(Product p) {
         String uid = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid();
 
