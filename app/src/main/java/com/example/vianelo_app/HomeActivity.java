@@ -17,6 +17,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 import android.widget.Button;
+import android.widget.Toast;
+
 import com.google.firebase.auth.FirebaseAuth;
 
 
@@ -34,6 +36,7 @@ public class HomeActivity extends AppCompatActivity {
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("");
         toolbar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.action_cart) {
                 startActivity(new Intent(HomeActivity.this, CartActivity.class));
@@ -105,6 +108,7 @@ public class HomeActivity extends AppCompatActivity {
                     if (doc.exists()) {
                         Long q = doc.getLong("quantity");
                         if (q != null) newQty = q.intValue() + 1;
+                        Toast("Producto agregado al carrito");
                     }
 
                     CartItem item = new CartItem();
@@ -120,6 +124,9 @@ public class HomeActivity extends AppCompatActivity {
                             .document(p.id)
                             .set(item);
                 });
+    }
+    private void Toast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override

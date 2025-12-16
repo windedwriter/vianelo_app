@@ -53,7 +53,7 @@ public class CatalogAdapter extends RecyclerView.Adapter<CatalogAdapter.VH> {
         }
     }
 
-    // ---------- Adapter overrides ----------
+
     @NonNull
     @Override
     public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

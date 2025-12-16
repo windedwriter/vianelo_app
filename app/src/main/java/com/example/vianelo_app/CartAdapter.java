@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import com.bumptech.glide.Glide;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,12 +29,12 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.VH> {
     static class VH extends RecyclerView.ViewHolder {
         ImageView img;                // @id/imgProduct
         TextView name;                // @id/tvName
-        TextView variant;             // @id/tvVariant   (opcional)
-        TextView note;                // @id/tvNote      (opcional)
+        TextView variant;             // @id/tvVariant
+        TextView note;                // @id/tvNote
         TextView qty;                 // @id/tvQty
         TextView subtotal;            // @id/tvSubtotal
         ImageButton plus, minus;      // @id/btnPlus, @id/btnMinus
-        TextView remove;              // @id/btnRemove  (texto "Eliminar")
+        TextView remove;              // @id/btnRemove
 
         VH(@NonNull View v) {
             super(v);
@@ -60,7 +61,17 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.VH> {
         CartItem it = data.get(position);
 
         h.name.setText(it.getDisplayName());
+        h.qty.setText(String.valueOf(it.quantity));
+        h.subtotal.setText(toMXN(it.getSubtotal()));
 
+
+
+
+        if(it.imageUrl != null && !it.imageUrl.isEmpty()){
+            Glide.with(h.img.getContext()).load(it.imageUrl).into(h.img);
+        }else{
+            h.img.setImageResource(R.drawable.logo_vianelo);
+        }
 
         if (h.variant != null) {
             String variantText = buildVariant(it.size, it.milk, it.extras);
@@ -112,7 +123,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.VH> {
         java.text.NumberFormat f = java.text.NumberFormat.getCurrencyInstance(new java.util.Locale("es","MX"));
         return f.format(value);
     }
-    
+
 
     @Override public int getItemCount(){ return data.size(); }
 
