@@ -32,27 +32,9 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.catalogo);
-
-
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("");
-        toolbar.setOnMenuItemClickListener(item -> {
-            if (item.getItemId() == R.id.action_cart) {
-                startActivity(new Intent(HomeActivity.this, CartActivity.class));
-                return true;
-            }
-            return false;
-        });
-        Button btnLogout = findViewById(R.id.btn_logout);
-        btnLogout.setOnClickListener(v -> {
-            FirebaseAuth.getInstance().signOut();
 
-            Intent i = new Intent(HomeActivity.this, MainActivity.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
-            finish();
-        });
 
 
         // FIREBASE
@@ -67,7 +49,7 @@ public class HomeActivity extends AppCompatActivity {
         loadCatalog();
     }
 
-    // =================== CARGA CATALOGO ===================
+    //  CARGA CATALOGO
     private void loadCatalog() {
         db.collection("products")
                 .get()
@@ -94,7 +76,7 @@ public class HomeActivity extends AppCompatActivity {
      El artículo nuevo o actualizado —que incluye detalles del producto como ID, nombre, precio y URL de la imagen— se guarda o actualiza en la subcolección "items" dentro del documento específico del carrito del usuario en la colección "carts".
 
      @param p El objeto {@link Product} que se agregará al carrito.
-     */ // =================== AGREGAR AL CARRITO ===================
+     */ //  AGREGAR AL CARRITO
     private void addToCart(Product p) {
         String uid = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid();
 
@@ -104,11 +86,11 @@ public class HomeActivity extends AppCompatActivity {
                 .document(p.id)
                 .get()
                 .addOnSuccessListener(doc -> {
+                    Toast("Producto agregado al carrito");
                     int newQty = 1;
                     if (doc.exists()) {
                         Long q = doc.getLong("quantity");
                         if (q != null) newQty = q.intValue() + 1;
-                        Toast("Producto agregado al carrito");
                     }
 
                     CartItem item = new CartItem();
@@ -134,5 +116,21 @@ public class HomeActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        if (item.getItemId() == R.id.action_cart) {
+            startActivity(new Intent(this, CartActivity.class));
+            return true;
+        }
+
+        if (item.getItemId() == R.id.profile) {
+            startActivity(new Intent(this, ProfileActivity.class));
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 
 }
