@@ -9,12 +9,22 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import android.widget.ArrayAdapter;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
+import com.google.firebase.functions.FirebaseFunctions;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import android.content.Intent;
+import android.net.Uri;
+import androidx.browser.customtabs.CustomTabsIntent;
+import com.google.android.material.button.MaterialButton;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +36,9 @@ public class CartActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private CartAdapter adapter;
+    private double lastTotal = 0;
+    private MaterialButton btnCheckout;
+    private FirebaseFunctions functions;
 
 
 
@@ -46,7 +59,11 @@ public class CartActivity extends AppCompatActivity {
         tvTotal=findViewById(R.id.tvTotal);
         toggleFulfillment=findViewById(R.id.toggleFulfillment);
         MaterialAutoCompleteTextView spinnerAddress = findViewById(R.id.spinnerAddress);
+        functions = FirebaseFunctions.getInstance();
 
+        btnCheckout = findViewById(R.id.btnCheckout);
+        btnCheckout.setOnClickListener(v -> startPaypalCheckout());
+        handlePaypalReturn(getIntent());
         String[] sucursales = new String[]{
                 "Sucursal Chapule",
                 "Sucursal Quintas"
@@ -121,6 +138,17 @@ public class CartActivity extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> {
                     e.printStackTrace();
+                    if (e instanceof com.google.firebase.functions.FirebaseFunctionsException) {
+                        com.google.firebase.functions.FirebaseFunctionsException fex =
+                                (com.google.firebase.functions.FirebaseFunctionsException) e;
+
+                        String msg = "Functions error: " + fex.getCode() + " | " + fex.getMessage();
+                        android.util.Log.e("PAYPAL", msg);
+                        android.widget.Toast.makeText(this, msg, android.widget.Toast.LENGTH_LONG).show();
+                    } else {
+                        android.util.Log.e("PAYPAL", "Other error: " + e.getMessage());
+                        android.widget.Toast.makeText(this, "Error: " + e.getMessage(), android.widget.Toast.LENGTH_LONG).show();
+                    }
                 });
     }
 
@@ -156,6 +184,7 @@ public class CartActivity extends AppCompatActivity {
         }
 
         double total = subtotal ;
+        lastTotal = total;
 
         tvSubtotal.setText("Subtotal: " + toMXN(subtotal));
         tvTotal.setText("Total: " + toMXN(total));
@@ -171,6 +200,100 @@ public class CartActivity extends AppCompatActivity {
         finish();
         return true;
     }
+    private void startPaypalCheckout() {
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            android.widget.Toast.makeText(this, "Inicia sesión para pagar", android.widget.Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (lastTotal <= 0) return;
+
+        String amount = String.format(Locale.US, "%.2f", lastTotal);
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("amount", amount);
+        data.put("currency", "MXN");
+        data.put("returnUrl", "vianelo://paypal-return");
+        data.put("cancelUrl", "vianelo://paypal-cancel");
+
+        functions.getHttpsCallable("paypalCreateOrder")
+                .call(data)
+                .addOnSuccessListener(res -> {
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> r = (Map<String, Object>) res.getData();
+
+                    String approvalUrl = (String) r.get("approvalUrl");
+                    String orderId = (String) r.get("orderId");
+
+                    if (approvalUrl != null && orderId != null) {
+                        openPaypalApproval(approvalUrl);
+                    }
+                })
+                .addOnFailureListener(Throwable::printStackTrace);
+    }
+    private void openPaypalApproval(String approvalUrl) {
+        CustomTabsIntent intent = new CustomTabsIntent.Builder().build();
+        intent.launchUrl(this, Uri.parse(approvalUrl));
+    }
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        handlePaypalReturn(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        handlePaypalReturn(getIntent());
+    }
+
+    private void handlePaypalReturn(Intent intent) {
+        Uri data = intent.getData();
+        if (data == null) return;
+
+
+        if ("vianelo".equals(data.getScheme()) && data.getHost() != null && data.getHost().equals("paypal-return")) {
+            String orderId = data.getQueryParameter("token");
+            if (orderId != null) {
+                intent.setData(null);
+                capturePaypalOrder(orderId);
+            }
+        }
+            if ("vianelo".equals(data.getScheme()) && "paypal-cancel".equals(data.getHost())) {
+                intent.setData(null);
+        }
+    }
+    private void capturePaypalOrder(String orderId) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("orderId", orderId);
+
+        functions.getHttpsCallable("paypalCaptureOrder")
+                .call(data)
+                .addOnSuccessListener(res -> {
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> r = (Map<String, Object>) res.getData();
+                    String status = (String) r.get("status");
+
+                    if ("COMPLETED".equals(status)) {
+                        clearCart();
+                    }
+                })
+                .addOnFailureListener(Throwable::printStackTrace);
+    }
+    private void clearCart() {
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("carts").document(uid).collection("items").get()
+                .addOnSuccessListener(snaps -> {
+                    for (DocumentSnapshot d : snaps) {
+                        d.getReference().delete();
+                    }
+                    loadCartFromFirebase();
+                });
+    }
+
+
 
 
 }

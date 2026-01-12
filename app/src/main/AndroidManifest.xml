@@ -36,7 +36,26 @@
             android:exported="false" />
         <activity
             android:name=".CartActivity"
-            android:exported="false" />
+            android:exported="true"
+            android:launchMode="singleTop">
+        <intent-filter>
+            <action android:name="android.intent.action.VIEW"/>
+            <category android:name="android.intent.category.DEFAULT"/>
+            <category android:name="android.intent.category.BROWSABLE"/>
+            <data
+                android:scheme="vianelo"
+                android:host="paypal-return"/>
+        </intent-filter>
+
+        <intent-filter>
+            <action android:name="android.intent.action.VIEW"/>
+            <category android:name="android.intent.category.DEFAULT"/>
+            <category android:name="android.intent.category.BROWSABLE"/>
+            <data
+                android:scheme="vianelo"
+                android:host="paypal-cancel"/>
+        </intent-filter> 
+        </activity>
         <activity
             android:name=".ProfileActivity"
             android:exported="false" />
