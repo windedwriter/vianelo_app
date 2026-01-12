@@ -60,23 +60,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
-            <TextView
-                android:id="@+id/tvVariant"
-                android:text="Grande • Leche deslactosada • Extra shot"
-                android:textColor="@color/black"
-                android:textSize="12sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp" />
-
-            <TextView
-                android:id="@+id/tvNote"
-                android:text="Nota: poca azúcar"
-                android:textColor="@color/black"
-                android:textSize="12sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp" />
         </LinearLayout>
 
         <!-- STEPPER -->

@@ -40,8 +40,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.VH> {
             super(v);
             img      = v.findViewById(R.id.imgProduct);
             name     = v.findViewById(R.id.tvName);
-            variant  = v.findViewById(R.id.tvVariant);
-            note     = v.findViewById(R.id.tvNote);
             qty      = v.findViewById(R.id.tvQty);
             subtotal = v.findViewById(R.id.tvSubtotal);
             plus     = v.findViewById(R.id.btnPlus);
@@ -83,15 +81,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.VH> {
             }
         }
 
-        // Nota opcional
-        if (h.note != null) {
-            if (it.note != null && !it.note.isEmpty()) {
-                h.note.setText("Nota: " + it.note);
-                h.note.setVisibility(View.VISIBLE);
-            } else {
-                h.note.setVisibility(View.GONE);
-            }
-        }
 
         // Cantidad y subtotal
         h.qty.setText(String.valueOf(it.quantity));

@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -27,10 +28,20 @@ public class CartActivity extends AppCompatActivity {
     private CartAdapter adapter;
 
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cart);
+        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+
         tvSubtotal=findViewById(R.id.tvSubtotal);
         tvTotal=findViewById(R.id.tvTotal);
         toggleFulfillment=findViewById(R.id.toggleFulfillment);
@@ -155,5 +166,11 @@ public class CartActivity extends AppCompatActivity {
                 java.text.NumberFormat.getCurrencyInstance(new java.util.Locale("es","MX"));
         return f.format(value);
     }
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
+    }
+
 
 }

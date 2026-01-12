@@ -9,11 +9,6 @@
         app:showAsAction="always"
         />
     <item
-        android:id="@+id/btn_logout"
-        android:icon="@drawable/logout_24px"
-        android:title="Cerrar Sesión"
-        app:showAsAction="always"/>
-    <item
         android:id="@+id/action_cart"
         android:icon="@drawable/ic_cart"
         android:title="Carrito"

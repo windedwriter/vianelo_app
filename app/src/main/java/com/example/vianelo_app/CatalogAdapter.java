@@ -37,7 +37,7 @@ public class CatalogAdapter extends RecyclerView.Adapter<CatalogAdapter.VH> {
         notifyDataSetChanged();
     }
 
-    // ---------- ViewHolder ----------
+
     static class VH extends RecyclerView.ViewHolder {
         TextView name;
         TextView price;

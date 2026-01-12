@@ -15,6 +15,7 @@
         android:backgroundTint="@color/morado_vianelo"
         android:titleTextColor="@color/black"
         app:navigationIconTint="@color/black"
+        app:navigationIcon="@drawable/arrow_back_24px"
         android:title="Tu pedido"
         app:titleCentered="true"
         app:layout_constraintTop_toTopOf="parent"
