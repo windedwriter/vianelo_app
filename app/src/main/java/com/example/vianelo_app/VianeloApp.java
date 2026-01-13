@@ -10,9 +10,7 @@ import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory;
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory;
 
 public class VianeloApp extends Application {
-
-    @Override
-    public void onCreate() {
+    @Override public void onCreate() {
         super.onCreate();
 
         FirebaseApp.initializeApp(this);
@@ -26,17 +24,12 @@ public class VianeloApp extends Application {
             appCheck.installAppCheckProviderFactory(
                     DebugAppCheckProviderFactory.getInstance()
             );
-            Log.d("APP_CHECK", "USANDO DebugAppCheckProviderFactory ");
+            Log.d("APP_CHECK", "USANDO DebugAppCheckProviderFactory ✅");
         } else {
             appCheck.installAppCheckProviderFactory(
                     PlayIntegrityAppCheckProviderFactory.getInstance()
             );
-            Log.d("APP_CHECK", "USANDO PlayIntegrity ");
+            Log.d("APP_CHECK", "USANDO PlayIntegrityAppCheckProviderFactory ✅");
         }
-
-
-        appCheck.getAppCheckToken(false)
-                .addOnSuccessListener(token -> Log.d("APP_CHECK", "TOKEN OK: " + token.getToken()))
-                .addOnFailureListener(e -> Log.e("APP_CHECK", "TOKEN FAIL", e));
     }
 }
