@@ -20,6 +20,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class OrdersActivity extends AppCompatActivity {
 
@@ -114,18 +115,10 @@ public class OrdersActivity extends AppCompatActivity {
         Log.d("ORDERS", "Cargando pedidos para usuario: " + userId + " con filtro: " + filter);
 
         Query query = db.collection("orders")
-                .whereEqualTo("userId", userId);
+                .whereEqualTo("userId", userId)
+                .orderBy("createdAt", Query.Direction.DESCENDING);
 
-        // Aplicar filtro según la tab seleccionada
-        if ("completed".equals(filter)) {
-            query = query.whereEqualTo("status", "completed");
-        } else if ("active".equals(filter)) {
-            query = query.whereIn("status", java.util.Arrays.asList("pending", "processing"));
-        }
-        // Si es "all", no agregamos filtro de status
-
-        query.orderBy("createdAt", Query.Direction.DESCENDING)
-                .get()
+        query.get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     progressBar.setVisibility(View.GONE);
 
@@ -135,38 +128,45 @@ public class OrdersActivity extends AppCompatActivity {
                         try {
                             Order order = new Order();
                             order.id = document.getId();
-                            order.orderId = document.getString("orderId");
+                            order.branchId = document.getString("branchId");
+                            order.paypalOrderId = document.getString("paypalOrderId");
+                            order.status = document.getString("status");
+                            order.paymentStatus = document.getString("paymentStatus");
+                            order.userId = document.getString("userId");
 
-                            // Manejar amount
-                            Object amountObj = document.get("amount");
-                            if (amountObj instanceof Double) {
-                                order.amount = (Double) amountObj;
-                            } else if (amountObj instanceof Long) {
-                                order.amount = ((Long) amountObj).doubleValue();
-                            } else if (amountObj instanceof String) {
-                                try {
-                                    order.amount = Double.parseDouble((String) amountObj);
-                                } catch (NumberFormatException e) {
-                                    order.amount = 0.0;
-                                }
+                            // Manejar total
+                            Object totalObj = document.get("total");
+                            if (totalObj instanceof Double) {
+                                order.total = (Double) totalObj;
+                            } else if (totalObj instanceof Long) {
+                                order.total = ((Long) totalObj).doubleValue();
                             }
 
-                            order.currency = document.getString("currency");
-                            order.status = document.getString("status");
+                            // Timestamps
                             order.createdAt = document.getTimestamp("createdAt");
-                            order.paypalData = document.getString("paypalData");
+                            order.receivedAt = document.getTimestamp("receivedAt");
+                            order.readyAt = document.getTimestamp("readyAt");
+                            order.deliveredAt = document.getTimestamp("deliveredAt");
+                            order.updatedAt = document.getTimestamp("updatedAt");
 
-                            // Filtrar manualmente para "active" si es necesario
-                            if ("active".equals(filter)) {
-                                if ("pending".equalsIgnoreCase(order.status) ||
-                                        "processing".equalsIgnoreCase(order.status)) {
-                                    orders.add(order);
-                                }
-                            } else {
+                            // Items
+                            order.items = (List<Map<String, Object>>) document.get("items");
+
+                            // Filtrar según la tab seleccionada
+                            boolean shouldAdd = false;
+                            if ("all".equals(filter)) {
+                                shouldAdd = true;
+                            } else if ("active".equals(filter)) {
+                                shouldAdd = order.isActive();
+                            } else if ("completed".equals(filter)) {
+                                shouldAdd = order.isCompleted();
+                            }
+
+                            if (shouldAdd) {
                                 orders.add(order);
                             }
 
-                            Log.d("ORDERS", "Pedido cargado: " + order.id + " - $" + order.amount + " - " + order.status);
+                            Log.d("ORDERS", "Pedido: " + order.id + " - $" + order.total + " - " + order.status);
                         } catch (Exception e) {
                             Log.e("ORDERS", "Error parseando pedido", e);
                         }
@@ -182,7 +182,7 @@ public class OrdersActivity extends AppCompatActivity {
                         emptyStateContainer.setVisibility(View.GONE);
                     }
 
-                    Log.d("ORDERS", "Total pedidos cargados: " + orders.size());
+                    Log.d("ORDERS", "Total pedidos mostrados: " + orders.size());
                 })
                 .addOnFailureListener(e -> {
                     progressBar.setVisibility(View.GONE);
