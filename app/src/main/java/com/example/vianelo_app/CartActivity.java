@@ -230,95 +230,26 @@ public class CartActivity extends AppCompatActivity {
             return;
         }
 
-        // Deshabilitar botón mientras se procesa
-        btnCheckout.setEnabled(false);
-        btnCheckout.setText("Procesando...");
+        // Abrir WebView con PayPal
+        Intent intent = new Intent(this, PayPalWebViewActivity.class);
+        intent.putExtra("amount", lastTotal);
+        startActivityForResult(intent, 1001);
+    }
 
-        String amount = String.format(Locale.US, "%.2f", lastTotal);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-        Map<String, Object> data = new HashMap<>();
-        data.put("amount", amount);
-        data.put("currency", "MXN");
-        data.put("returnUrl", "vianelo://paypal-return");
-        data.put("cancelUrl", "vianelo://paypal-cancel");
-
-        Log.d("PAYPAL", "Llamando a paypalCreateOrder con amount=" + amount);
-
-        functions.getHttpsCallable("paypalCreateOrder")
-                .call(data)
-                .addOnSuccessListener(res -> {
-                    btnCheckout.setEnabled(true);
-                    btnCheckout.setText("Pagar con PayPal");
-
-                    Log.d("PAYPAL", "✅ Respuesta recibida");
-                    Log.d("PAYPAL", "Raw response data class: " +
-                            (res.getData() != null ? res.getData().getClass().getName() : "null"));
-                    Log.d("PAYPAL", "Raw response data: " + res.getData());
-
-                    @SuppressWarnings("unchecked")
-                    Map<String, Object> result = (Map<String, Object>) res.getData();
-
-                    if (result == null) {
-                        Toast.makeText(this, "Respuesta vacía del servidor", Toast.LENGTH_LONG).show();
-                        Log.e("PAYPAL", "❌ result es null");
-                        return;
-                    }
-
-                    String approvalUrl = (String) result.get("approvalUrl");
-                    String orderId = (String) result.get("orderId");
-                    Object status = result.get("status");
-
-                    Log.d("PAYPAL", "Orden creada: " + orderId);
-                    Log.d("PAYPAL", "URL de aprobación: " + approvalUrl);
-                    Log.d("PAYPAL", "Status: " + status);
-                    Log.d("PAYPAL", "Respuesta completa: " + result);
-                    Log.d("PAYPAL", "Todas las keys: " + result.keySet());
-
-                    if (approvalUrl != null && !approvalUrl.isEmpty()) {
-                        openPaypalApproval(approvalUrl);
-                    } else {
-                        Toast.makeText(this, "Error: No se recibió URL de pago", Toast.LENGTH_LONG).show();
-                        Log.e("PAYPAL", "❌ approvalUrl es null o vacía");
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    btnCheckout.setEnabled(true);
-                    btnCheckout.setText("Pagar con PayPal");
-
-                    Log.e("PAYPAL", "Error en paypalCreateOrder", e);
-
-                    String errorMsg = "Error al crear orden";
-
-                    if (e instanceof FirebaseFunctionsException) {
-                        FirebaseFunctionsException fex = (FirebaseFunctionsException) e;
-                        FirebaseFunctionsException.Code code = fex.getCode();
-                        String message = fex.getMessage();
-                        Object details = fex.getDetails();
-
-                        Log.e("PAYPAL", "Code: " + code);
-                        Log.e("PAYPAL", "Message: " + message);
-                        Log.e("PAYPAL", "Details: " + details);
-
-                        switch (code) {
-                            case UNAUTHENTICATED:
-                                errorMsg = "Error de autenticación. Vuelve a iniciar sesión.";
-                                break;
-                            case PERMISSION_DENIED:
-                                errorMsg = "Permisos insuficientes. Contacta a soporte.";
-                                break;
-                            case INVALID_ARGUMENT:
-                                errorMsg = "Datos inválidos: " + message;
-                                break;
-                            case INTERNAL:
-                                errorMsg = "Error del servidor: " + message;
-                                break;
-                            default:
-                                errorMsg = "Error: " + message;
-                        }
-                    }
-
-                    Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show();
-                });
+        if (requestCode == 1001) {
+            if (resultCode == RESULT_OK) {
+                // Pago exitoso
+                Toast.makeText(this, "✅ Pago completado", Toast.LENGTH_LONG).show();
+                clearCart();
+            } else {
+                // Pago cancelado o error
+                Toast.makeText(this, "Pago no completado", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void openPaypalApproval(String approvalUrl) {
