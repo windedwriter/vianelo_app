@@ -70,8 +70,6 @@ public class CartActivity extends AppCompatActivity {
         // Inicializar Functions con la región correcta
         functions = FirebaseFunctions.getInstance("us-central1");
 
-        // IMPORTANTE: Comentar esta línea si NO estás usando el emulador
-        // functions.useEmulator("10.0.2.2", 5001);
 
         Log.d("PAYPAL", "Functions initialized for region: us-central1");
         Log.d("PAYPAL", "Functions instance: " + functions);
@@ -243,7 +241,7 @@ public class CartActivity extends AppCompatActivity {
         if (requestCode == 1001) {
             if (resultCode == RESULT_OK) {
                 // Pago exitoso
-                Toast.makeText(this, "✅ Pago completado", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, " Pago completado", Toast.LENGTH_LONG).show();
                 clearCart();
             } else {
                 // Pago cancelado o error
@@ -254,20 +252,19 @@ public class CartActivity extends AppCompatActivity {
 
     private void openPaypalApproval(String approvalUrl) {
         try {
-            // Usar navegador externo en lugar de Custom Tabs
-            // Custom Tabs tiene problemas con deep links en PayPal Sandbox
+
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(approvalUrl));
 
-            // Asegurar que se abra en navegador externo, no en la app
+
             browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
             startActivity(browserIntent);
 
-            Log.d("PAYPAL", "✅ Abriendo PayPal en navegador externo: " + approvalUrl);
+            Log.d("PAYPAL", " Abriendo PayPal en navegador externo: " + approvalUrl);
             Toast.makeText(this, "Redirigiendo a PayPal...", Toast.LENGTH_SHORT).show();
 
         } catch (Exception e) {
-            Log.e("PAYPAL", "❌ Error abriendo navegador", e);
+            Log.e("PAYPAL", " Error abriendo navegador", e);
             Toast.makeText(this, "Error al abrir PayPal: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
@@ -339,12 +336,12 @@ public class CartActivity extends AppCompatActivity {
                 Toast.makeText(this, "Procesando pago...", Toast.LENGTH_SHORT).show();
                 capturePaypalOrder(orderId);
             } else {
-                Log.e("PAYPAL", "❌ orderId es null o vacío en el retorno");
+                Log.e("PAYPAL", " orderId es null o vacío en el retorno");
                 Toast.makeText(this, "Error: No se recibió ID de orden", Toast.LENGTH_SHORT).show();
                 isProcessingReturn = false;
             }
         } else if ("paypal-cancel".equals(host)) {
-            Log.d("PAYPAL", "❌ Pago cancelado por el usuario");
+            Log.d("PAYPAL", " Pago cancelado por el usuario");
             Toast.makeText(this, "Pago cancelado", Toast.LENGTH_SHORT).show();
             isProcessingReturn = false;
         } else {
@@ -377,7 +374,7 @@ public class CartActivity extends AppCompatActivity {
                     Log.d("PAYPAL", "Respuesta completa: " + result);
 
                     if ("COMPLETED".equals(status)) {
-                        Toast.makeText(this, "✅ Pago completado exitosamente", Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, " Pago completado exitosamente", Toast.LENGTH_LONG).show();
                         clearCart();
                     } else {
                         Toast.makeText(this, "Estado del pago: " + status, Toast.LENGTH_LONG).show();

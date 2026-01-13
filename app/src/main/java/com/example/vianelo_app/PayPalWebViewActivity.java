@@ -191,7 +191,7 @@ public class PayPalWebViewActivity extends AppCompatActivity {
         order.put("userId", userId);
         order.put("amount", amount);
         order.put("currency", "MXN");
-        order.put("status", "pending"); // Estado inicial: pendiente
+        order.put("status", "completed");
         order.put("paypalData", orderData);
         order.put("createdAt", com.google.firebase.firestore.FieldValue.serverTimestamp());
 

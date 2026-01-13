@@ -24,12 +24,12 @@ public class VianeloApp extends Application {
             appCheck.installAppCheckProviderFactory(
                     DebugAppCheckProviderFactory.getInstance()
             );
-            Log.d("APP_CHECK", "USANDO DebugAppCheckProviderFactory ✅");
+            Log.d("APP_CHECK", "USANDO DebugAppCheckProviderFactory ");
         } else {
             appCheck.installAppCheckProviderFactory(
                     PlayIntegrityAppCheckProviderFactory.getInstance()
             );
-            Log.d("APP_CHECK", "USANDO PlayIntegrityAppCheckProviderFactory ✅");
+            Log.d("APP_CHECK", "USANDO PlayIntegrityAppCheckProviderFactory ");
         }
     }
 }
