@@ -128,6 +128,10 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(new Intent(this, ProfileActivity.class));
             return true;
         }
+        if (item.getItemId() == R.id.action_orders) {
+            startActivity(new Intent(this, OrdersActivity.class));
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
