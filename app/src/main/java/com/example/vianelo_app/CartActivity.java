@@ -237,6 +237,7 @@ public class CartActivity extends AppCompatActivity {
                     Log.e("PAYPAL", "paypalCreateOrder FAIL", e);
 
                     if (e instanceof FirebaseFunctionsException) {
+
                         FirebaseFunctionsException fex = (FirebaseFunctionsException) e;
                         String msg = "Functions error: " + fex.getCode() + " | " + fex.getMessage();
                         Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
@@ -277,7 +278,7 @@ public class CartActivity extends AppCompatActivity {
             String orderId = data.getQueryParameter("token"); // token = orderId
             Log.d("PAYPAL", "return token(orderId)=" + orderId);
 
-            // ✅ evita re-disparo
+
             intent.setData(null);
 
             if (orderId != null) capturePaypalOrder(orderId);
@@ -308,17 +309,22 @@ public class CartActivity extends AppCompatActivity {
                         Toast.makeText(this, "Pago status: " + status, Toast.LENGTH_LONG).show();
                     }
                 })
-                .addOnFailureListener(e -> {
-                    Log.e("PAYPAL", "paypalCaptureOrder FAIL", e);
+                .addOnFailureListener(e -> handleFunctionsError("capturePaypalOrder", e));
+    }
+    private void handleFunctionsError(String operation, Exception e) {
+        Log.e("PAYPAL", operation + " FAIL", e);
 
-                    if (e instanceof FirebaseFunctionsException) {
-                        FirebaseFunctionsException fex = (FirebaseFunctionsException) e;
-                        String msg = "Functions error: " + fex.getCode() + " | " + fex.getMessage();
-                        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                });
+        if (e instanceof FirebaseFunctionsException) {
+            FirebaseFunctionsException fex = (FirebaseFunctionsException) e;
+            Object details = fex.getDetails();
+            String msg = "Functions error: " + fex.getCode()
+                    + " | " + fex.getMessage()
+                    + (details != null ? " | details=" + details : "");
+            Log.e("PAYPAL", operation + " details=" + details);
+            Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     private void clearCart() {

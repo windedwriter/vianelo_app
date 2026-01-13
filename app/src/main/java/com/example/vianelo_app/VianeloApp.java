@@ -35,8 +35,8 @@ public class VianeloApp extends Application {
         }
 
 
-       // appCheck.getAppCheckToken(false)
-                //.addOnSuccessListener(token -> Log.d("APP_CHECK", "TOKEN OK: " + token.getToken()))
-                //.addOnFailureListener(e -> Log.e("APP_CHECK", "TOKEN FAIL", e));
+        appCheck.getAppCheckToken(false)
+                .addOnSuccessListener(token -> Log.d("APP_CHECK", "TOKEN OK: " + token.getToken()))
+                .addOnFailureListener(e -> Log.e("APP_CHECK", "TOKEN FAIL", e));
     }
 }
