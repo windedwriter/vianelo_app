@@ -40,7 +40,7 @@ public class PayPalWebViewActivity extends AppCompatActivity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                Log.d("PAYPAL", "✅ Página cargada");
+                Log.d("PAYPAL", "Página cargada");
             }
         });
 
@@ -71,7 +71,7 @@ public class PayPalWebViewActivity extends AppCompatActivity {
         String html = buildPayPalHTML();
         webView.loadDataWithBaseURL("https://vianelo.netlify.app/", html, "text/html", "UTF-8", null);
 
-        Log.d("PAYPAL", "💳 Iniciando checkout. Monto: $" + amount);
+        Log.d("PAYPAL", " Iniciando checkout. Monto: $" + amount);
     }
 
     private String buildPayPalHTML() {
@@ -145,7 +145,7 @@ public class PayPalWebViewActivity extends AppCompatActivity {
         @JavascriptInterface
         public void onPaymentSuccess(String orderData) {
             runOnUiThread(() -> {
-                Log.d("PAYPAL", "✅ Pago exitoso: " + orderData);
+                Log.d("PAYPAL", "Pago exitoso: " + orderData);
                 Toast.makeText(PayPalWebViewActivity.this,
                         "¡Pago completado exitosamente!", Toast.LENGTH_LONG).show();
 
@@ -159,7 +159,7 @@ public class PayPalWebViewActivity extends AppCompatActivity {
         @JavascriptInterface
         public void onPaymentCancelled() {
             runOnUiThread(() -> {
-                Log.d("PAYPAL", "❌ Pago cancelado");
+                Log.d("PAYPAL", "Pago cancelado");
                 Toast.makeText(PayPalWebViewActivity.this,
                         "Pago cancelado", Toast.LENGTH_SHORT).show();
                 setResult(RESULT_CANCELED);
@@ -170,7 +170,7 @@ public class PayPalWebViewActivity extends AppCompatActivity {
         @JavascriptInterface
         public void onPaymentError(String error) {
             runOnUiThread(() -> {
-                Log.e("PAYPAL", "❌ Error: " + error);
+                Log.e("PAYPAL", "Error: " + error);
                 Toast.makeText(PayPalWebViewActivity.this,
                         "Error en el pago", Toast.LENGTH_LONG).show();
                 setResult(RESULT_CANCELED);
@@ -199,8 +199,8 @@ public class PayPalWebViewActivity extends AppCompatActivity {
                 .collection("orders")
                 .add(order)
                 .addOnSuccessListener(ref ->
-                        Log.d("PAYPAL", "✅ Orden guardada: " + ref.getId()))
+                        Log.d("PAYPAL", "Orden guardada: " + ref.getId()))
                 .addOnFailureListener(e ->
-                        Log.e("PAYPAL", "❌ Error guardando orden", e));
+                        Log.e("PAYPAL", "Error guardando orden", e));
     }
 }

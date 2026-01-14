@@ -329,7 +329,7 @@ public class CartActivity extends AppCompatActivity {
                 orderId = data.getQueryParameter("ba_token");
             }
 
-            Log.d("PAYPAL", "🔄 Retorno exitoso de PayPal con token: " + orderId);
+            Log.d("PAYPAL", " Retorno exitoso de PayPal con token: " + orderId);
 
             if (orderId != null && !orderId.isEmpty()) {
                 // Mostrar mensaje de procesamiento
